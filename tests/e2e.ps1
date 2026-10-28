@@ -541,7 +541,54 @@ try {
                 if ([int]$hit.Groups[1].Value -ne $stepTotal) { $mismatch += ('ci.yml 写了 ' + $hit.Groups[1].Value) }
             }
         }
+        # 英文 README 用的是 "N groups" / "N integration test groups"，同样不能漂移。
+        $enPath = Join-Path $pkgRoot 'README.en.md'
+        if (Test-Path -LiteralPath $enPath) {
+            $enText = [System.IO.File]::ReadAllText($enPath, [System.Text.UTF8Encoding]::new($false))
+            foreach ($hit in [regex]::Matches($enText, '(\d+)\s+(?:integration test\s+)?groups')) {
+                if ([int]$hit.Groups[1].Value -ne $stepTotal) { $mismatch += ('README.en.md 写了 ' + $hit.Groups[1].Value) }
+            }
+        }
         Assert-True ($mismatch.Count -eq 0) ('所有文档须写 ' + $stepTotal + ' 组，不符：' + ($mismatch -join ' ; '))
+    }
+    Step '28 中英文 README 结构对齐（防英文版滞后）' {
+        # 英文版最容易变成「发完就不管」的过时副本。这里校验两边章节数与关键锚点都存在，
+        # 并确认语言互链是双向的。
+        $pkgRoot = Split-Path $PSScriptRoot -Parent
+        $zhPath = Join-Path $pkgRoot 'README.md'
+        $enPath = Join-Path $pkgRoot 'README.en.md'
+        Assert-True (Test-Path -LiteralPath $enPath) 'README.en.md 必须存在'
+        $zh = [System.IO.File]::ReadAllText($zhPath, [System.Text.UTF8Encoding]::new($false))
+        $en = [System.IO.File]::ReadAllText($enPath, [System.Text.UTF8Encoding]::new($false))
+
+        # 双向语言链接
+        Assert-True ($zh -match '\[English\]\(README\.en\.md\)') '中文版须链接到 README.en.md'
+        Assert-True ($en -match '\[中文\]\(README\.md\)') '英文版须链接回 README.md'
+
+        # 徽章三件套两边一致
+        foreach ($badge in @('actions/workflows/ci.yml/badge.svg', 'License-Apache_2.0', 'PowerShell-7%2B')) {
+            Assert-True ($zh -match [regex]::Escape($badge)) ('中文版缺徽章 ' + $badge)
+            Assert-True ($en -match [regex]::Escape($badge)) ('英文版缺徽章 ' + $badge)
+        }
+
+        # 章节数一致：一方加节另一方没加，说明译文滞后
+        $zhSections = ([regex]::Matches($zh, '(?m)^## ')).Count
+        $enSections = ([regex]::Matches($en, '(?m)^## ')).Count
+        Assert-True ($zhSections -eq $enSections) ('中英文章节数须一致：中文 ' + $zhSections + ' / 英文 ' + $enSections)
+
+        # 英文版必须保留关键事实，不得为了简略而删掉边界声明
+        foreach ($anchor in @('unbounded storage + bounded injection', 'no vector similarity', 'Nothing is ever deleted')) {
+            Assert-True ($en -match [regex]::Escape($anchor)) ('英文版须保留关键声明：' + $anchor)
+        }
+        # 架构图与 LICENSE 引用
+        Assert-True ($en -match 'docs/architecture\.svg') '英文版须含架构图'
+        Assert-True ($en -match '\[Apache License 2\.0\]\(LICENSE\)') '英文版须链接 LICENSE'
+        # CONTRIBUTING 必须存在且被至少一方引用
+        $contribPath = Join-Path $pkgRoot 'CONTRIBUTING.md'
+        Assert-True (Test-Path -LiteralPath $contribPath) 'CONTRIBUTING.md 必须存在'
+        $contrib = [System.IO.File]::ReadAllText($contribPath, [System.Text.UTF8Encoding]::new($false))
+        Assert-True ($contrib -match '(?m)^#\s*Contributing') 'CONTRIBUTING.md 须有标题'
+        Assert-True ($contrib -match 'ScriptPath') '贡献指南须写明 -ScriptPath 反向验证要求'
     }
 }
 finally {
