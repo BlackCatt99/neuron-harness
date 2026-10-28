@@ -3,6 +3,34 @@
 本项目的版本记录。格式参考 [Keep a Changelog](https://keepachangelog.com/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.1.1] - 2026-10-29
+
+首个公开版本后的补丁版。`v0.1.0` 打在了加入 CI 之前的提交上，本版使版本号与实际代码对齐。
+无 API 变更，不影响已有数据。
+
+### 新增
+
+- **GitHub Actions CI**：`windows-latest` 与 `ubuntu-latest` 双平台执行全部集成测试。
+  README 顶部加入 CI / License / PowerShell 徽章，状态为真实运行结果。
+- **README「为什么不用现成方案」**：按五个维度（记忆存放位置、谁决定放入上下文、
+  是否压缩历史、运行依赖、可审计性）对比 Letta / MemGPT 与 LangChain memory，
+  并说明各自适用场景，不给优劣排序。
+- **Step 25**：静态检查测试代码——不得含字面反斜杠路径，枚举点文件必须带 `-Force`。
+- **Step 27**：文档与 CI 中写的测试组数必须等于 `Step` 声明数，防止手改测试后文档漂移。
+
+### 修复
+
+- **跨平台测试缺陷（由首轮 CI 在 ubuntu 暴露）**：`Get-ChildItem -Filter '.lock-stale-*'`
+  缺 `-Force`。以点开头的文件在 Linux/macOS 上属隐藏文件，枚举为空导致 Step 19 误报
+  「陈旧锁未被隔离」。Windows 无此差异，故本地测试一直为绿。
+- **Step 20 字面反斜杠路径**：`'archive\t2'` 改为 `Join-Path` 分段传入，
+  避免 Linux 上被解析为单个文件名。
+
+### 变更
+
+- 测试组数 25 → 27。
+- 平台支持表述改为以 CI 实测为准：Linux 由 `ubuntu-latest` 实际执行；macOS 仍未覆盖。
+
 ## [0.1.0] - 2026-10-29
 
 首个公开版本。由 `context-router` v5.4 重命名而来，版本号重新起算。
@@ -46,4 +74,5 @@
 - 编号计算每次递归扫描归档目录，条目到数百后会有可感知延迟。
 - 仅在 Windows 上实测；Linux/macOS 的代码路径已去除平台专有依赖，但未经真实环境验证。
 
+[0.1.1]: https://github.com/BlackCatt99/neuron-harness/releases/tag/v0.1.1
 [0.1.0]: https://github.com/BlackCatt99/neuron-harness/releases/tag/v0.1.0

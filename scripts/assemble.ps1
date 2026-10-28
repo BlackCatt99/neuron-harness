@@ -1,6 +1,6 @@
 #Requires -Version 7
 <#
-neuron-harness 确定性组装脚本（skill v0.1）。
+neuron-harness 确定性组装脚本（skill v0.1.1）。
 用法见同目录 ../SKILL.md。子命令经 -Mode 分发。
 关键约定：
 - 索引 7 列：id/task/tags/type/summary/file/src（src = 来源 MSG id 或 CONFIRMED）
