@@ -1,0 +1,15 @@
+# 统一换行符：仓库内一律 LF，签出时按平台转换。
+# 否则 Windows 贡献者提交的 CRLF 会让 Linux/macOS 上的脚本出现隐藏字符问题。
+* text=auto eol=lf
+
+# PowerShell 脚本显式指定 LF（避免 shebang/编码相关怪问题）
+*.ps1 text eol=lf
+*.psm1 text eol=lf
+
+# 文档与配置
+*.md text eol=lf
+*.json text eol=lf
+
+# 许可证与二进制保护
+LICENSE text eol=lf
+NOTICE text eol=lf

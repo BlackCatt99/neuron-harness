@@ -1,0 +1,20 @@
+# 项目状态目录：不同项目各自持有，绝不入库
+.neuron-harness/
+.context-router/
+
+# 测试与备份产物
+*.bak-*
+*.tmp-*
+archive/
+state-history/
+templates-history/
+
+# 编辑器与系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# PowerShell
+*.log

@@ -1,0 +1,17 @@
+{
+  "skill_version": 1,
+  "skill_semver": "0.1",
+  "name": "neuron-harness",
+  "license": "Apache-2.0",
+  "lineage": {
+    "renamed_from": "context-router",
+    "previous_semver": "5.4",
+    "note": "重命名后的新基线，版本号重新起算；内容继承 context-router v5.4 及其全部实证修复"
+  },
+  "tpl_min": {
+    "tier.md": 3,
+    "archive.md": 3,
+    "relevance.md": 3,
+    "review.md": 2
+  }
+}
