@@ -475,7 +475,13 @@ try {
         Assert-True ($licText -match 'Apache License') 'LICENSE 须为 Apache 全文'
         Assert-True ($licText -match 'Version 2\.0') 'LICENSE 须标明 Version 2.0'
         Assert-True ($licText -match 'END OF TERMS AND CONDITIONS') 'LICENSE 须含完整条款（非摘要）'
-        Assert-True ($licText -match 'Copyright \d{4} neuron-harness contributors') 'LICENSE 须含版权行'
+        # LICENSE 必须与官方全文一致：不得被改写或在附录后追加私有声明。
+        # 版权归属放 NOTICE（Apache-2.0 的标准做法），否则 GitHub 的许可证识别可能失准。
+        Assert-True ($licText -notmatch 'Copyright \d{4} neuron-harness') 'LICENSE 不得混入项目专属版权行（应放 NOTICE）'
+        Assert-True ($licText -match 'Copyright \[yyyy\] \[name of copyright owner\]') 'LICENSE 附录占位符须保持官方原样'
+        $noticeText = [System.IO.File]::ReadAllText($noticePath, [System.Text.UTF8Encoding]::new($false))
+        Assert-True ($noticeText -match 'Copyright \d{4} neuron-harness contributors') 'NOTICE 须含版权行'
+        Assert-True ($noticeText -match 'Apache License, Version 2\.0') 'NOTICE 须声明许可证版本'
         $mani = Get-Content -Raw -Encoding utf8 (Join-Path $pkgRoot 'manifest.json') | ConvertFrom-Json
         Assert-True ($mani.license -eq 'Apache-2.0') ('manifest.license 须为 Apache-2.0，实得 ' + $mani.license)
         Assert-True ($mani.name -eq 'neuron-harness') 'manifest.name 须为 neuron-harness'
