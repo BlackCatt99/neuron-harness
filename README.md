@@ -1,5 +1,9 @@
 # neuron-harness
 
+[![CI](https://github.com/BlackCatt99/neuron-harness/actions/workflows/ci.yml/badge.svg)](https://github.com/BlackCatt99/neuron-harness/actions/workflows/ci.yml)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![PowerShell 7+](https://img.shields.io/badge/PowerShell-7%2B-5391FE.svg)](https://github.com/PowerShell/PowerShell)
+
 > **目标**：让长线会话的每一轮都只带相关信息——减少历史对注意力的稀释，且**原文永不丢失**。
 > **手段**：把历史搬到模型外面，每轮按需重新打包。
 > **边界**：这是**无限存储 + 有界注入**，不是无限上下文窗口。
@@ -87,10 +91,11 @@ pwsh -NoProfile -File scripts/assemble.ps1 -Mode Assemble -TaskId <线名> \
 
 ## 平台支持
 
-- **Windows**：完整支持，24 组集成测试在主开发机全绿。
-- **Linux / macOS**：代码路径已去除 Windows 专有依赖（正斜杠路径、`GetTempPath`、
-  不依赖 `-WindowStyle`），但**尚未在真实 Linux 环境执行过测试**——这一点如实标注，
-  不声称已跨平台验证。有 Linux 环境时请先跑 `pwsh -File tests/e2e.ps1`。
+- **Windows**：完整支持。25 组集成测试在主开发机与 CI 的 `windows-latest` 上全绿。
+- **Linux**：代码路径已去除 Windows 专有依赖（正斜杠路径、`GetTempPath`、不依赖
+  `-WindowStyle`、不假定 PATH 里有 `pwsh`），并由 CI 的 `ubuntu-latest` 实际执行全部
+  测试。徽章即真实结果，不是声明。
+- **macOS**：未在 CI 覆盖，理论上与 Linux 同路径，但**未经实测**。
 - **共享/网络文件系统（UNC、NFS）**：锁与 rename 原子性未验证，不在支持范围。
 
 ## 测试
