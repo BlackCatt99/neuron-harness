@@ -91,7 +91,7 @@ pwsh -NoProfile -File scripts/assemble.ps1 -Mode Assemble -TaskId <线名> \
 
 ## 平台支持
 
-- **Windows**：完整支持。25 组集成测试在主开发机与 CI 的 `windows-latest` 上全绿。
+- **Windows**：完整支持。27 组集成测试在主开发机与 CI 的 `windows-latest` 上全绿。
 - **Linux**：代码路径已去除 Windows 专有依赖（正斜杠路径、`GetTempPath`、不依赖
   `-WindowStyle`、不假定 PATH 里有 `pwsh`），并由 CI 的 `ubuntu-latest` 实际执行全部
   测试。徽章即真实结果，不是声明。
@@ -101,7 +101,7 @@ pwsh -NoProfile -File scripts/assemble.ps1 -Mode Assemble -TaskId <线名> \
 ## 测试
 
 ```powershell
-pwsh -NoProfile -File tests/e2e.ps1          # 24 组，退出码 0 表示全绿
+pwsh -NoProfile -File tests/e2e.ps1          # 27 组，退出码 0 表示全绿
 pwsh -NoProfile -File tests/e2e.ps1 -KeepArtifacts   # 保留临时项目便于排查
 pwsh -NoProfile -File tests/e2e.ps1 -ScriptPath <旧版脚本>  # 反向验证新用例真能抓到旧缺陷
 ```
@@ -121,7 +121,7 @@ neuron-harness/
 ├── manifest.json         版本、许可证与模板最低版本映射
 ├── templates/            4 份短判据，运行时注入模型（tier/archive/relevance/review）
 ├── scripts/assemble.ps1  确定性执行器（17 个 Mode，写锁、原子写、索引重写）
-└── tests/e2e.ps1         24 组集成测试
+└── tests/e2e.ps1         27 组集成测试
 ```
 
 ## 血统

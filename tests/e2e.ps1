@@ -338,7 +338,9 @@ try {
         Assert-True (@($staleOutput | Where-Object { $_ -match '陈旧锁' }).Count -eq 1) '应明确报告陈旧锁被隔离'
         Assert-True ($clock.Elapsed.TotalSeconds -lt 30) ('陈旧锁应在阈值后快速隔离，实际耗时 ' + [int]$clock.Elapsed.TotalSeconds + 's')
         Assert-True (-not (Test-Path $staleLock)) '完成后原锁文件解除'
-        $isolated = @(Get-ChildItem $staleRoot -Filter '.lock-stale-*')
+        # -Force 必需：以点开头的文件名在 Linux/macOS 上属隐藏文件，不加 -Force 枚举不到。
+        # 首轮 CI 在 ubuntu-latest 上正是因此误报「未被隔离」（Windows 无隐藏属性差异，故本地全绿）。
+        $isolated = @(Get-ChildItem $staleRoot -Filter '.lock-stale-*' -Force)
         Assert-True ($isolated.Count -eq 1) '陈旧锁应被改名隔离而非删除'
         $staleRow = @(Get-Content -Encoding utf8 (Join-Path $staleRoot 'index.tsv') | Where-Object { $_ -match ('^' + $staleId + "`t") })
         Assert-True ($staleRow.Count -eq 1) '陈旧锁之后的写入完整入索引'
@@ -353,8 +355,11 @@ try {
             & $S -Mode Archive -Type evidence -TaskId 'multi' -Summary "[数据|新增] seed$i" -ContentFile (W "seed $i") -Project $multiProject | Out-Null
         }
         # 制造需要层位变更的条件：把 t2 文件手工挪到平铺路径，触发 legacy 归一化
-        foreach ($seedFile in @(Get-ChildItem (Join-Path $multiRoot 'archive\t2') -Filter 'E*.md')) {
-            Move-Item $seedFile.FullName (Join-Path $multiRoot ('archive\' + $seedFile.Name))
+        # 路径一律用 Join-Path 分段传入，不写字面反斜杠——Linux 上 'archive\t2' 是单个文件名。
+        $t2Dir = Join-Path (Join-Path $multiRoot 'archive') 't2'
+        $flatDir = Join-Path $multiRoot 'archive'
+        foreach ($seedFile in @(Get-ChildItem $t2Dir -Filter 'E*.md')) {
+            Move-Item $seedFile.FullName (Join-Path $flatDir $seedFile.Name)
         }
         $multiIndex = Join-Path $multiRoot 'index.tsv'
         $text = [System.IO.File]::ReadAllText($multiIndex)
@@ -464,7 +469,32 @@ try {
         $scriptText = [System.IO.File]::ReadAllText($S, [System.Text.UTF8Encoding]::new($false))
         Assert-True ($scriptText -notmatch "replace '/', '\\\\'") '脚本不得把正斜杠硬转成反斜杠（Linux 上会变字面文件名）'
     }
-    Step '25 许可证一致性：LICENSE/NOTICE/manifest/README 四处对齐' {
+    Step '25 测试代码跨平台：无字面反斜杠路径、枚举点文件必带 -Force' {
+        $testText = [System.IO.File]::ReadAllText($PSCommandPath, [System.Text.UTF8Encoding]::new($false))
+        $testLines = $testText -split "`r?`n"
+        # 字面反斜杠路径（如 'archive\t2'）：Windows 上能用，Linux 上被当成单个文件名。
+        # 排除注释行与正则中的转义。
+        $badPaths = @()
+        for ($i = 0; $i -lt $testLines.Count; $i++) {
+            $line = $testLines[$i]
+            if ($line -match '^\s*#') { continue }
+            if ($line -match "'[^']*[A-Za-z0-9_]\\\\[A-Za-z0-9_]" -or $line -match '"[^"]*[A-Za-z0-9_]\\\\[A-Za-z0-9_]') {
+                $badPaths += ('第 ' + ($i + 1) + ' 行: ' + $line.Trim())
+            }
+        }
+        Assert-True ($badPaths.Count -eq 0) ("测试不得含字面反斜杠路径：" + ($badPaths -join ' ; '))
+        # 枚举以点开头的文件必须带 -Force，否则在 Linux/macOS 上枚举为空（隐藏文件）。
+        $dotEnum = @()
+        for ($i = 0; $i -lt $testLines.Count; $i++) {
+            $line = $testLines[$i]
+            if ($line -match '^\s*#') { continue }
+            if ($line -match 'Get-ChildItem' -and $line -match "'\.\w" -and $line -notmatch '-Force') {
+                $dotEnum += ('第 ' + ($i + 1) + ' 行: ' + $line.Trim())
+            }
+        }
+        Assert-True ($dotEnum.Count -eq 0) ("枚举点文件须带 -Force：" + ($dotEnum -join ' ; '))
+    }
+    Step '26 许可证一致性：LICENSE/NOTICE/manifest/README 四处对齐' {
         $pkgRoot = Split-Path $PSScriptRoot -Parent
         $licPath = Join-Path $pkgRoot 'LICENSE'
         $noticePath = Join-Path $pkgRoot 'NOTICE'
@@ -488,6 +518,30 @@ try {
         $readme = [System.IO.File]::ReadAllText($readmePath, [System.Text.UTF8Encoding]::new($false))
         Assert-True ($readme -match 'Apache License 2\.0') 'README 须声明 Apache-2.0'
         Assert-True ($readme -notmatch '尚未选择') 'README 不得残留「尚未选择许可证」'
+    }
+    Step '27 文档组数与实测一致（防文档漂移）' {
+        # 手改测试后忘记同步文档是常见漂移；这里静态数 Step 声明，不依赖运行时状态。
+        $pkgRoot = Split-Path $PSScriptRoot -Parent
+        $ownText = [System.IO.File]::ReadAllText($PSCommandPath, [System.Text.UTF8Encoding]::new($false))
+        $stepTotal = ([regex]::Matches($ownText, "(?m)^    Step '")).Count
+        $mismatch = @()
+        foreach ($docName in @('README.md', 'OPERATIONS.md', 'CHANGELOG.md')) {
+            $docPath = Join-Path $pkgRoot $docName
+            if (-not (Test-Path -LiteralPath $docPath)) { continue }
+            $docText = [System.IO.File]::ReadAllText($docPath, [System.Text.UTF8Encoding]::new($false))
+            foreach ($hit in [regex]::Matches($docText, '(\d+)\s*组')) {
+                $declared = [int]$hit.Groups[1].Value
+                if ($declared -ne $stepTotal) { $mismatch += ($docName + ' 写了 ' + $declared) }
+            }
+        }
+        $ciPath = Join-Path $pkgRoot '.github\workflows\ci.yml'
+        if (Test-Path -LiteralPath $ciPath) {
+            $ciText = [System.IO.File]::ReadAllText($ciPath, [System.Text.UTF8Encoding]::new($false))
+            foreach ($hit in [regex]::Matches($ciText, '(\d+)\s*组')) {
+                if ([int]$hit.Groups[1].Value -ne $stepTotal) { $mismatch += ('ci.yml 写了 ' + $hit.Groups[1].Value) }
+            }
+        }
+        Assert-True ($mismatch.Count -eq 0) ('所有文档须写 ' + $stepTotal + ' 组，不符：' + ($mismatch -join ' ; '))
     }
 }
 finally {
