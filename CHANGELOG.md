@@ -73,6 +73,7 @@
 - 单全局写锁：并发保证正确性，不保证吞吐。
 - 编号计算每次递归扫描归档目录，条目到数百后会有可感知延迟。
 - 仅在 Windows 上实测；Linux/macOS 的代码路径已去除平台专有依赖，但未经真实环境验证。
+  （v0.1.1 起 Linux 已由 CI 的 `ubuntu-latest` 实际执行全部测试；macOS 仍未覆盖。）
 
 [0.1.1]: https://github.com/BlackCatt99/neuron-harness/releases/tag/v0.1.1
 [0.1.0]: https://github.com/BlackCatt99/neuron-harness/releases/tag/v0.1.0
