@@ -421,10 +421,17 @@ try {
         Assert-True ($scriptText -match [regex]::Escape('skill v' + $semver)) ('脚本头版本须为 v' + $semver)
         $skillText = [System.IO.File]::ReadAllText((Join-Path $PSScriptRoot '..\SKILL.md'), [System.Text.UTF8Encoding]::new($false))
         Assert-True ($skillText -match [regex]::Escape('v' + $semver)) ('SKILL description 版本须为 v' + $semver)
-        # frontmatter name 必须等于技能目录名，否则技能发现会认为安装损坏
-        $dirName = Split-Path ([System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))) -Leaf
+        # frontmatter name 必须等于 manifest.name（规范名）；仅在安装到 skills 路径时
+        # 才额外要求等于目录名——否则 git 克隆到任意目录（如 nh-clone-xxxx）会误报。
+        $pkgRoot = Split-Path $PSScriptRoot -Parent
+        $dirName = Split-Path $pkgRoot -Leaf
         $declaredName = if ($skillText -match '(?m)^name:\s*(\S+)\s*$') { $Matches[1] } else { '' }
-        Assert-True ($declaredName -eq $dirName) ('SKILL name「' + $declaredName + '」须等于目录名「' + $dirName + '」')
+        $manifestName = (Get-Content -Raw -Encoding utf8 (Join-Path $pkgRoot 'manifest.json') | ConvertFrom-Json).name
+        Assert-True ($declaredName -eq $manifestName) ('SKILL name「' + $declaredName + '」须等于 manifest.name「' + $manifestName + '」')
+        $parentDir = Split-Path $pkgRoot -Parent
+        if ((Split-Path $parentDir -Leaf) -match '^skills') {
+            Assert-True ($declaredName -eq $dirName) ('安装到 skills 路径时 name 须等于目录名：「' + $declaredName + '」vs「' + $dirName + '」')
+        }
     }
     Step '23 旧目录只读告警：不迁移、不删除、不假成功' {
         $legacyProject = Join-Path $proj 'legacy-root-fixture'
