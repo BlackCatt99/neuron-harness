@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" width="960" height="600" role="img" aria-label="neuron-harness 架构：主代理归档、选取、组装；记忆核心分 T1-T4 层；子代理只收任务包">
+  <title>neuron-harness 架构</title>
+  <desc>主代理负责归档、选取、组装。记忆核心以 T1-T4 分层存放，原文永不删除。子代理只接收预算内的小任务包，产物经 staging 校验后回写。</desc>
+
+  <defs>
+    <marker id="arrowW" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#58a6ff"/>
+    </marker>
+    <marker id="arrowR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#3fb950"/>
+    </marker>
+    <marker id="arrowG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#8b949e"/>
+    </marker>
+    <marker id="arrowP" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#bc8cff"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="600" rx="14" fill="#0d1117"/>
+  <rect x="0.5" y="0.5" width="959" height="599" rx="14" fill="none" stroke="#30363d"/>
+
+  <text x="40" y="46" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="23" font-weight="700" fill="#e6edf3">neuron-harness</text>
+  <text x="40" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="12.5" fill="#8b949e">长线会话的外置记忆与上下文路由 · external memory + context routing</text>
+
+  <!-- 会话消息 -->
+  <rect x="25" y="200" width="145" height="140" rx="10" fill="#161b22" stroke="#30363d"/>
+  <text x="97" y="228" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="11" font-weight="700" letter-spacing="1.2" fill="#8b949e">SESSION</text>
+  <text x="97" y="256" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="13" fill="#e6edf3">会话消息</text>
+  <text x="97" y="278" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="11" fill="#8b949e">追加到 raw.log</text>
+  <text x="97" y="298" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="11" fill="#8b949e">只追加，不修改</text>
+  <circle cx="97" cy="320" r="3" fill="#30363d"/>
+
+  <!-- 主代理 -->
+  <rect x="200" y="140" width="185" height="280" rx="10" fill="#161b22" stroke="#30363d"/>
+  <text x="292" y="170" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="11" font-weight="700" letter-spacing="1.2" fill="#8b949e">MAIN AGENT</text>
+  <text x="292" y="190" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="11" fill="#6e7681">无状态 · 只负责路由</text>
+
+  <rect x="222" y="208" width="141" height="38" rx="19" fill="#1f6feb22" stroke="#1f6feb66"/>
+  <text x="292" y="232" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="12.5" fill="#79c0ff">归档 archive</text>
+
+  <rect x="222" y="258" width="141" height="38" rx="19" fill="#1f6feb22" stroke="#1f6feb66"/>
+  <text x="292" y="282" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="12.5" fill="#79c0ff">选取 select</text>
+
+  <rect x="222" y="308" width="141" height="38" rx="19" fill="#1f6feb22" stroke="#1f6feb66"/>
+  <text x="292" y="332" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="12.5" fill="#79c0ff">组装 assemble</text>
+
+  <text x="292" y="378" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="10.5" fill="#6e7681">判据走 templates/</text>
+  <text x="292" y="394" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="10.5" fill="#6e7681">硬规则走脚本</text>
+
+  <!-- 记忆核心 -->
+  <rect x="420" y="100" width="265" height="400" rx="12" fill="#161b22" stroke="#30363d"/>
+  <text x="552" y="128" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="11" font-weight="700" letter-spacing="1.2" fill="#8b949e">.neuron-harness/</text>
+
+  <!-- T1 -->
+  <rect x="436" y="142" width="233" height="74" rx="8" fill="#3fb95015" stroke="#3fb95059"/>
+  <text x="552" y="165" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="12.5" font-weight="600" fill="#56d364">T1 · 工作集 + 活跃约束</text>
+  <text x="552" y="185" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="10.5" fill="#8b949e">working set · 每轮强制注入</text>
+  <text x="552" y="203" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="10.5" fill="#6e7681">六节结构 · 增量修订 · 乐观锁</text>
+
+  <!-- T2 -->
+  <rect x="436" y="226" width="233" height="74" rx="8" fill="#1f6feb15" stroke="#1f6feb59"/>
+  <text x="552" y="249" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="12.5" font-weight="600" fill="#79c0ff">T2 · 近期证据</text>
+  <text x="552" y="269" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="10.5" fill="#8b949e">recent evidence · 默认检索面</text>
+  <text x="552" y="287" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="10.5" fill="#6e7681">Search 默认只命中这一层</text>
+
+  <!-- T3 -->
+  <rect x="436" y="310" width="233" height="74" rx="8" fill="#bc8cff15" stroke="#bc8cff59"/>
+  <text x="552" y="333" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="12.5" font-weight="600" fill="#d2a8ff">T3 · 长期证据 / 决策分期</text>
+  <text x="552" y="353" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="10.5" fill="#8b949e">long-term · decisions</text>
+  <text x="552" y="371" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="10.5" fill="#6e7681">需 -Tier t3 显式扩层</text>
+
+  <!-- T4 -->
+  <rect x="436" y="394" width="233" height="74" rx="8" fill="#8b949e15" stroke="#8b949e4d"/>
+  <text x="552" y="417" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="12.5" font-weight="600" fill="#adbac7">T4 · 功能性遗忘</text>
+  <text x="552" y="437" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="10.5" fill="#8b949e">functional forgetting</text>
+  <text x="552" y="455" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="10.5" fill="#6e7681">原文永不删除 · 只降低可见性</text>
+
+  <!-- 子代理 -->
+  <rect x="730" y="180" width="195" height="180" rx="10" fill="#161b22" stroke="#30363d"/>
+  <text x="827" y="210" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="11" font-weight="700" letter-spacing="1.2" fill="#8b949e">SUBAGENT</text>
+  <text x="827" y="236" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="13" fill="#e6edf3">短生命周期</text>
+  <text x="827" y="260" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="11" fill="#8b949e">只收任务包</text>
+  <text x="827" y="280" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="11" fill="#8b949e">不继承主会话</text>
+  <text x="827" y="306" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="10.5" fill="#6e7681">首行可报 INFO-MISSING</text>
+  <text x="827" y="324" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="10.5" fill="#6e7681">缺什么由协议回传</text>
+
+  <!-- 连线：会话 -> 主代理 -->
+  <path d="M 172 270 L 196 270" stroke="#8b949e" stroke-width="1.6" fill="none" marker-end="url(#arrowG)"/>
+  <text x="184" y="258" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="10" fill="#6e7681">记录</text>
+
+  <!-- 连线：主代理 -> 记忆（写） -->
+  <path d="M 387 196 L 414 196" stroke="#58a6ff" stroke-width="1.8" fill="none" marker-end="url(#arrowW)"/>
+  <text x="400" y="184" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="10" fill="#58a6ff">写入</text>
+
+  <!-- 连线：记忆 -> 主代理（读） -->
+  <path d="M 414 350 L 389 350" stroke="#3fb950" stroke-width="1.8" fill="none" marker-end="url(#arrowR)"/>
+  <text x="400" y="368" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="10" fill="#3fb950">召回</text>
+
+  <!-- 连线：主代理 -> 子代理（任务包） -->
+  <path d="M 292 138 L 292 86 L 827 86 L 827 176" stroke="#bc8cff" stroke-width="1.8" fill="none" marker-end="url(#arrowP)"/>
+  <rect x="500" y="72" width="120" height="20" rx="10" fill="#0d1117"/>
+  <text x="560" y="86" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="10.5" fill="#bc8cff">任务包（预算内）</text>
+
+  <!-- 连线：子代理 -> staging 回写（指向核心底部留白，不指进 T4 以免误读为写入遗忘层） -->
+  <path d="M 827 362 L 827 556 L 555 556 L 555 484" stroke="#8b949e" stroke-width="1.6" fill="none" marker-end="url(#arrowG)"/>
+  <rect x="620" y="544" width="168" height="20" rx="10" fill="#0d1117"/>
+  <text x="704" y="558" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans CJK SC', sans-serif" font-size="10.5" fill="#8b949e">staging → 来源校验 → 入库</text>
+
+  <!-- 神经元隐喻：右侧枝突（避开左上的写入箭头） -->
+  <g stroke="#30363d" fill="none" stroke-width="1">
+    <path d="M 668 165 C 684 160 692 152 698 144"/>
+    <path d="M 668 179 C 686 178 696 172 704 166"/>
+    <path d="M 668 433 C 684 438 692 446 698 454"/>
+    <path d="M 668 447 C 686 448 696 454 704 460"/>
+  </g>
+  <g fill="#58a6ff">
+    <circle cx="698" cy="144" r="2.2"/>
+    <circle cx="704" cy="166" r="2.2"/>
+  </g>
+  <g fill="#8b949e">
+    <circle cx="698" cy="454" r="2.2"/>
+    <circle cx="704" cy="460" r="2.2"/>
+  </g>
+</svg>
