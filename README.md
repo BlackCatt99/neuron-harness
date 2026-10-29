@@ -15,6 +15,9 @@
 
 ![neuron-harness 架构](docs/architecture.svg)
 
+▶ **[宣传短片（21 秒，无声）](docs/promo/neuron-harness-promo.mp4)** — 四幕演示：记忆分层网络、
+历史如何被筛选重组成任务包、以及「原文永不删除」。
+
 > 结构上仿神经元：T1 是当前激活的核心，T2–T4 逐级向边缘扩散，长期不访问则衰减下沉。
 > 机制上是符号系统——关键词/标签匹配、显式层参数、绝对天数阈值，**不是**权重矩阵与向量相似度。
 > 这个区别很重要：不要把「像神经网络」说成「是神经网络」。
@@ -149,7 +152,8 @@ neuron-harness/
 ├── manifest.json         版本、许可证与模板最低版本映射
 ├── templates/            4 份短判据，运行时注入模型（tier/archive/relevance/review）
 ├── scripts/assemble.ps1  确定性执行器（17 个 Mode，写锁、原子写、索引重写）
-└── tests/e2e.ps1         28 组集成测试
+├── tests/e2e.ps1         28 组集成测试
+└── docs/                 架构图、宣传片；promo/render_promo.py 可重新渲染视频
 ```
 
 ## 血统

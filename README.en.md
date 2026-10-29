@@ -17,6 +17,9 @@ All history stays on disk verbatim, and each turn only the relevant parts go int
 
 ![neuron-harness architecture](docs/architecture.svg)
 
+▶ **[Promo clip (21s, silent)](docs/promo/neuron-harness-promo.mp4)** — four acts: the layered memory
+network, how history gets selected and repacked into a task pack, and "nothing is ever deleted".
+
 > Structurally neuron-inspired: T1 is the currently active core, T2–T4 spread outward toward the
 > edge, and entries decay downward when untouched for a long time. Mechanically it is a symbolic
 > system — keyword/tag matching, explicit tier parameters, absolute day thresholds. It is **not**
@@ -173,7 +176,8 @@ neuron-harness/
 ├── manifest.json         Version, license and template minimum-version mapping
 ├── templates/            4 short criteria injected at runtime (tier/archive/relevance/review)
 ├── scripts/assemble.ps1  Deterministic executor (17 modes, write lock, atomic writes, index rewrite)
-└── tests/e2e.ps1         28 integration test groups
+├── tests/e2e.ps1         28 integration test groups
+└── docs/                 Architecture diagram and promo video (regenerate via promo/render_promo.py)
 ```
 
 ## Lineage
