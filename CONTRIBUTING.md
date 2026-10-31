@@ -6,13 +6,21 @@
 ## 快速开始
 
 ```bash
-git clone https://github.com/BlackCatt99/neuron-harness.git
+git clone https://github.com/BlackCatt99/neuron-harness-skill.git neuron-harness
 cd neuron-harness
-pwsh -NoProfile -File tests/e2e.ps1     # 应该全绿（27 组）
+pwsh -NoProfile -File tests/e2e.ps1     # 应该全绿（28 组）
 ```
 
 需要 **PowerShell 7+**。CI 在 `windows-latest` 与 `ubuntu-latest` 双平台跑同一套测试，
 所以任何提交都不能假定只在 Windows 上工作。
+
+仓库有三套互不替代的测试：
+
+- `tests/e2e.ps1` —— 执行器主基线，**28 组**（主链、回归、并发、陈旧锁、跨平台路径、许可证）；
+- `tests/integration.tests.ps1` —— 项目安装器回归，**27 个用例**（所有权、事务恢复、原生 hook 配置）；
+- `tests/prompt-hook.tests.ps1` —— 提示词采集 hook 回归，**19 个用例**（逐字保留、回执去重、注入拒绝）。
+
+三套都必须在本地全绿；CI 也会分别执行。
 
 ## 提交前必须做的三件事
 
@@ -35,7 +43,8 @@ pwsh -NoProfile -File tests/e2e.ps1 -ScriptPath <修复前的 assemble.ps1>
 
 添加或删除 `Step` 之后，`README.md`、`README.en.md`、`OPERATIONS.md`、`CHANGELOG.md`、
 `.github/workflows/ci.yml` 里写的「N 组」必须一起改。忘了的话 Step 27 会直接失败并告诉你
-哪份文件写错了。
+哪份文件写错了。（安装器与 hook 两套用例数在 `CONTRIBUTING.md` 与本说明里单独维护，
+Step 27 只校验执行器基线的 28 组。）
 
 ### 3. 版本三处同源
 

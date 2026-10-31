@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1100" viewBox="0 0 1600 1100" role="img" aria-label="neuron-harness architecture">
+<title>neuron-harness architecture</title>
+<desc>The main agent makes semantic choices. A deterministic script records originals, stores tiered evidence, assembles a bounded task pack and validates staging before approval. Short-lived subagents receive only the task pack.</desc>
+<rect width="100%" height="100%" fill="#070c11"/>
+<text x="64" y="61.94" font-family="Consolas, monospace" font-size="17" fill="#75efd9">THE SYSTEM / NOT THE METAPHOR</text>
+<text x="60" y="131.36" font-family="Segoe UI, sans-serif" font-size="48" fill="#eff2ea">Keep the history. Curate the context.</text>
+<text x="64" y="184.68" font-family="Segoe UI, sans-serif" font-size="24" fill="#9baeb5">The model makes semantic choices. The script enforces hard rules.</text>
+<rect x="64" y="244" width="296" height="134" rx="14" fill="#0d171d" stroke="#2a3e44"/>
+<text x="88" y="279.12" font-family="Consolas, monospace" font-size="16" fill="#9baeb5">01 / INPUT</text>
+<text x="88" y="324.14" font-family="Segoe UI, sans-serif" font-size="27" fill="#eff2ea">Session messages</text>
+<text x="88" y="357.58" font-family="Segoe UI, sans-serif" font-size="19" fill="#75efd9">Append originals → raw.log</text>
+<rect x="64" y="425" width="296" height="310" rx="14" fill="#0d171d" stroke="#2a3e44"/>
+<text x="88" y="461.12" font-family="Consolas, monospace" font-size="16" fill="#9baeb5">02 / MAIN AGENT</text>
+<text x="88" y="515.96" font-family="Segoe UI, sans-serif" font-size="28" fill="#eff2ea">Semantic choices</text>
+<text x="88" y="567.22" font-family="Segoe UI, sans-serif" font-size="21" fill="#eff2ea">Classify &amp; archive</text>
+<text x="88" y="614.22" font-family="Segoe UI, sans-serif" font-size="21" fill="#eff2ea">Maintain working set</text>
+<text x="88" y="661.22" font-family="Segoe UI, sans-serif" font-size="21" fill="#eff2ea">Select relevant evidence</text>
+<polyline points="212,378 212,417" fill="none" stroke="#75efd9" stroke-width="2"/>
+<polygon points="212,417 207.68517015256216,409.10175694298664 216.31482984743784,409.10175694298664" fill="#75efd9"/>
+<polyline points="360,538 410,538" fill="none" stroke="#75efd9" stroke-width="2"/>
+<polygon points="410,538 402.10175694298664,542.3148298474379 402.10175694298664,533.6851701525621" fill="#75efd9"/>
+<rect x="420" y="244" width="560" height="491" rx="14" fill="#0d171d" stroke="#2a3e44"/>
+<text x="444" y="279.12" font-family="Consolas, monospace" font-size="16" fill="#9baeb5">03 / PERSISTENT MEMORY</text>
+<text x="444" y="326.78" font-family="Consolas, monospace" font-size="29" fill="#eff2ea">.neuron-harness/</text>
+<polyline points="448,372 448,427" fill="none" stroke="#75efd9" stroke-width="3"/>
+<text x="466" y="388.86" font-family="Consolas, monospace" font-size="23" fill="#75efd9">T1</text>
+<text x="524" y="388.86" font-family="Segoe UI, sans-serif" font-size="23" fill="#eff2ea">Working set + constraints</text>
+<text x="524" y="420.76" font-family="Segoe UI, sans-serif" font-size="18" fill="#9baeb5">Injected every turn</text>
+<polyline points="448,455 448,510" fill="none" stroke="#75efd9" stroke-width="3"/>
+<text x="466" y="471.86" font-family="Consolas, monospace" font-size="23" fill="#75efd9">T2</text>
+<text x="524" y="471.86" font-family="Segoe UI, sans-serif" font-size="23" fill="#eff2ea">Recent evidence</text>
+<text x="524" y="503.76" font-family="Segoe UI, sans-serif" font-size="18" fill="#9baeb5">Default Search tier</text>
+<polyline points="448,538 448,593" fill="none" stroke="#b3b1f7" stroke-width="3"/>
+<text x="466" y="554.86" font-family="Consolas, monospace" font-size="23" fill="#b3b1f7">T3</text>
+<text x="524" y="554.86" font-family="Segoe UI, sans-serif" font-size="23" fill="#eff2ea">Long-term / decisions</text>
+<text x="524" y="586.76" font-family="Segoe UI, sans-serif" font-size="18" fill="#9baeb5">Explicit tier expansion</text>
+<polyline points="448,621 448,676" fill="none" stroke="#9baeb5" stroke-width="3"/>
+<text x="466" y="637.86" font-family="Consolas, monospace" font-size="23" fill="#9baeb5">T4</text>
+<text x="524" y="637.86" font-family="Segoe UI, sans-serif" font-size="23" fill="#eff2ea">Functional forgetting</text>
+<text x="524" y="669.76" font-family="Segoe UI, sans-serif" font-size="18" fill="#9baeb5">Lower visibility; originals retained</text>
+<polyline points="980,505 1012,505 1012,375 1036,375" fill="none" stroke="#75efd9" stroke-width="2"/>
+<polygon points="1036,375 1028.1017569429866,379.3148298474378 1028.1017569429866,370.6851701525622" fill="#75efd9"/>
+<rect x="1044" y="244" width="492" height="227" rx="14" fill="#0d171d" stroke="#2a3e44"/>
+<text x="1068" y="279.12" font-family="Consolas, monospace" font-size="16" fill="#9baeb5">04 / DETERMINISTIC SCRIPT</text>
+<text x="1068" y="331.6" font-family="Segoe UI, sans-serif" font-size="30" fill="#eff2ea">Bounded task pack</text>
+<text x="1068" y="382.22" font-family="Segoe UI, sans-serif" font-size="21" fill="#eff2ea">Rules + working set + evidence</text>
+<text x="1068" y="423.4" font-family="Segoe UI, sans-serif" font-size="20" fill="#9baeb5">Budget / format / sources / atomic writes</text>
+<polyline points="1288,471 1288,530" fill="none" stroke="#75efd9" stroke-width="2"/>
+<polygon points="1288,530 1283.6851701525623,522.1017569429866 1292.3148298474377,522.1017569429866" fill="#75efd9"/>
+<rect x="1044" y="542" width="492" height="193" rx="14" fill="#0d171d" stroke="#2a3e44"/>
+<text x="1068" y="577.12" font-family="Consolas, monospace" font-size="16" fill="#9baeb5">05 / SUBAGENT</text>
+<text x="1068" y="630.6" font-family="Segoe UI, sans-serif" font-size="30" fill="#eff2ea">Short-lived subagent</text>
+<text x="1068" y="681.22" font-family="Segoe UI, sans-serif" font-size="21" fill="#9baeb5">Task pack only. No inherited session.</text>
+<polyline points="1288,735 1288,797" fill="none" stroke="#b3b1f7" stroke-width="2"/>
+<polygon points="1288,797 1283.6851701525623,789.1017569429866 1292.3148298474377,789.1017569429866" fill="#b3b1f7"/>
+<rect x="420" y="808" width="1116" height="115" rx="14" fill="#0d171d" stroke="#2a3e44"/>
+<text x="444" y="843.12" font-family="Consolas, monospace" font-size="16" fill="#b3b1f7">06 / STAGING</text>
+<text x="660" y="848.68" font-family="Segoe UI, sans-serif" font-size="24" fill="#eff2ea">Source checks + semantic review → approve / reject</text>
+<text x="660" y="886.76" font-family="Segoe UI, sans-serif" font-size="18" fill="#9baeb5">Approved output returns to storage; source existence is not proof of correctness.</text>
+<polyline points="420,865 390,865 390,709 412,709" fill="none" stroke="#b3b1f7" stroke-width="2"/>
+<polygon points="412,709 404.10175694298664,713.3148298474379 404.10175694298664,704.6851701525621" fill="#b3b1f7"/>
+<text x="64" y="983.58" font-family="Segoe UI, sans-serif" font-size="19" fill="#9baeb5">T1 is not an archive tier. T4 discard entries are hidden from Search; Fetch accepts known IDs.</text>
+<text x="64" y="1024.76" font-family="Segoe UI, sans-serif" font-size="18" fill="#75efd9">Symbolic file-backed memory · no vector search · no automatic graph traversal</text>
+</svg>

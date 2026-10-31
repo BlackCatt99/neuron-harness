@@ -1,0 +1,27 @@
+{
+  "technical_checks": "pass",
+  "text_canvas_overflow": [],
+  "gif_checks": {
+    "memory-network.gif": {
+      "frames": 60,
+      "bytes": 2046456,
+      "changing": true
+    },
+    "quickstart.gif": {
+      "frames": 32,
+      "bytes": 216865,
+      "changing": true
+    }
+  },
+  "video": {
+    "duration": 24,
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "decode": "pass",
+    "black_gaps": "none detected",
+    "audio": "intentionally silent"
+  },
+  "readme_links_checked": 37,
+  "visual_acceptance": "blocked: visual-judge provider unavailable; current model image input unavailable; no aesthetic approval claimed"
+}

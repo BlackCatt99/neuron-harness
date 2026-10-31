@@ -23,3 +23,7 @@ desktop.ini
 docs/promo/frames/
 __pycache__/
 *.pyc
+
+# Local delivery notes may contain private conversation and machine details.
+docs/brand/DELIVERY.md
+integration/DELIVERY.md

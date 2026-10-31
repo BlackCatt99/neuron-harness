@@ -3,6 +3,29 @@
 本项目的版本记录。格式参考 [Keep a Changelog](https://keepachangelog.com/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.2.0] - 2026-11-01
+
+### Added
+
+- Project integration installer with read-only Plan, explicit harness selection, managed instruction blocks,
+  ownership checks, transaction journals, recovery, and history-preserving uninstall.
+- Short per-turn runtime protocol; optional Claude Code UserPromptSubmit hook for verbatim prompt capture.
+- Independent installer and hook regression suites; explicit distinction between instruction-driven activation
+  and event wiring, without claiming live-client validation.
+- Bilingual clone/install/status/recovery examples and prominent Agent Skill identification.
+- Redesigned bilingual covers and architecture diagrams, dynamic memory and quickstart previews,
+  a 24-second silent film, and an offline interactive brand page.
+
+### Fixed
+
+- LogRaw no longer trims trailing whitespace or rejects an empty readable input file; original prompt strings
+  remain intact. Hook inputs containing reserved legacy log framing are rejected rather than rewritten.
+
+### Naming
+
+- Display name: **neuron-harness skill**. Public repository: **neuron-harness-skill**.
+  Skill ID, checkout directory convention and `.neuron-harness/` data namespace remain unchanged.
+
 ## [0.1.1] - 2026-10-29
 
 首个公开版本后的补丁版。`v0.1.0` 打在了加入 CI 之前的提交上，本版使版本号与实际代码对齐。
@@ -75,5 +98,6 @@
 - 仅在 Windows 上实测；Linux/macOS 的代码路径已去除平台专有依赖，但未经真实环境验证。
   （v0.1.1 起 Linux 已由 CI 的 `ubuntu-latest` 实际执行全部测试；macOS 仍未覆盖。）
 
-[0.1.1]: https://github.com/BlackCatt99/neuron-harness/releases/tag/v0.1.1
-[0.1.0]: https://github.com/BlackCatt99/neuron-harness/releases/tag/v0.1.0
+[0.2.0]: https://github.com/BlackCatt99/neuron-harness-skill/releases/tag/v0.2.0
+[0.1.1]: https://github.com/BlackCatt99/neuron-harness-skill/releases/tag/v0.1.1
+[0.1.0]: https://github.com/BlackCatt99/neuron-harness-skill/releases/tag/v0.1.0

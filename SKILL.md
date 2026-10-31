@@ -1,8 +1,9 @@
 ---
 name: neuron-harness
 description: |
-  神经元 harness（neuron-harness）v0.1.1：给长线 AI 会话用的外置「神经元记忆 + 上下文路由」
-  规格与确定性执行器。主模型只做归档、选取、组装，细分工作交给短生命周期子代理；
+  neuron-harness skill v0.2.0：跨 harness 的 Agent Skill，为长线任务提供外置记忆与上下文路由。
+  在用户要求跨会话记忆、每轮项目接入、长期任务上下文管理，或项目已启用 .neuron-harness 时使用。
+  主模型只做归档、选取、组装，细分工作交给短生命周期子代理；
   工作集是持久对象，任务包是每轮从工作集渲染的视图；失效内容下沉到 T1–T4 分层，
   原文永不删除，遗忘只降低检索可见性。
   适用 harness：任何能执行 PowerShell 7 脚本、并能把 templates/ 短判据注入模型的
@@ -15,7 +16,16 @@ description: |
   十轮审查修订（累计约 150 项，版本源为 manifest.json）。
 ---
 
-# neuron-harness：神经元上下文路由 Skill
+# neuron-harness skill：神经元上下文路由
+
+## 首次安装与项目常驻接入
+
+- 这是 Agent Skill，不是独立 agent 框架。公开仓库名为 `neuron-harness-skill`，skill ID 与状态目录仍为 `neuron-harness`。
+- 用户明确启用项目集成后，使用 `scripts/integrate.ps1 -Action Plan -Harness <类型> -Project <绝对项目根>` 预览，再 Install。先通过 `assemble.ps1 -Mode Init` 初始化。
+- 安装器仅维护项目规则中的短托管块和 `.neuron-harness/runtime.md`；不自授权限、不改全局配置、不覆盖原有规则。
+- Claude 可选 `-EnablePromptHook`，通过原生 `UserPromptSubmit` 自动记录原文并注入短协议；其他适配为 instruction-only。规则文件被加载不等于每轮必定执行。
+- 每轮读短运行协议与所需 templates；hook 已提供消息 ID 时不要重复 LogRaw。首次接入及恢复步骤见 `integration/README.md`。
+- `Status` 仅验证安装配置，不能声称真实 harness 事件已实测；Cursor 兼容入口尚未在实际客户端验证。
 
 ## 文档定位与执行主体（先读这节，本文件的宪法）
 
