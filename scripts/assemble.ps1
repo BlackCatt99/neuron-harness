@@ -1,6 +1,6 @@
 #Requires -Version 7
 <#
-neuron-harness 确定性组装脚本（skill v0.1.1）。
+neuron-harness 确定性组装脚本（skill v0.2.0）。
 用法见同目录 ../SKILL.md。子命令经 -Mode 分发。
 关键约定：
 - 索引 7 列：id/task/tags/type/summary/file/src（src = 来源 MSG id 或 CONFIRMED）
@@ -510,11 +510,11 @@ switch ($Mode) {
         Assert-Init
         if ($TaskId -eq '') { throw 'LogRaw 需要 -TaskId' }
         $content = Read-TextRaw $ContentFile
-        if ($null -eq $content -or $content.Trim() -eq '') { throw 'ContentFile 为空或不存在' }
+        if ($null -eq $content) { throw 'ContentFile 不存在或不可读取' }
         Invoke-Locked {
             $msgId = Next-MsgId
             $ts = (Get-Date).ToString('yyyy-MM-ddTHH:mm:ss')
-            Append-Text (Join-Path $root 'raw.log') "<<<MSG $msgId ${ts} task=$TaskId>>>`n$($content.TrimEnd())`n<<<END $msgId>>>`n"
+            Append-Text (Join-Path $root 'raw.log') "<<<MSG $msgId ${ts} task=$TaskId>>>`n$content`n<<<END $msgId>>>`n"
             # 机械信号硬触发一：用户消息首行显式标记，脚本直接落信号，不依赖主模型判断
             $auto = ''
             $firstLine = (@($content -split "`n")[0]).Trim()

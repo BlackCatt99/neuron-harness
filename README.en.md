@@ -1,24 +1,37 @@
-# neuron-harness
+# neuron-harness skill
 
-[![CI](https://github.com/BlackCatt99/neuron-harness/actions/workflows/ci.yml/badge.svg)](https://github.com/BlackCatt99/neuron-harness/actions/workflows/ci.yml)
+**A harness-agnostic Agent Skill for external memory and context routing in long-running tasks.**
+
+[![CI](https://github.com/BlackCatt99/neuron-harness-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/BlackCatt99/neuron-harness-skill/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![PowerShell 7+](https://img.shields.io/badge/PowerShell-7%2B-5391FE.svg)](https://github.com/PowerShell/PowerShell)
 
 **English** | [中文](README.md)
+
+![neuron-harness: Keep the memory. Lose the noise.](docs/brand/hero.en.png)
 
 > **Goal**: every turn of a long-running session carries only what's relevant — less dilution of
 > attention by history, and **nothing is ever lost**.
 > **How**: move history outside the model, then repack on demand each turn.
 > **Boundary**: this is **unbounded storage + bounded injection**, not an unlimited context window.
 
-An external memory and context-routing harness for long-running AI sessions. **Not context
+An external memory and context-routing **skill** for long-running AI sessions, not another agent
+framework. **Not context
 compression**: compression shortens history and loses detail; this doesn't compress — it selects.
 All history stays on disk verbatim, and each turn only the relevant parts go into the model.
 
-![neuron-harness architecture](docs/architecture.svg)
+[![Memory metaphor: the working set is central; selected evidence enters a task pack](docs/brand/memory-network.gif)](docs/brand/neuron-harness-film.mp4)
 
-▶ **[Promo clip (21s, silent)](docs/promo/neuron-harness-promo.mp4)** — four acts: the layered memory
-network, how history gets selected and repacked into a task pack, and "nothing is ever deleted".
+**[Watch the redesigned film (24s, silent)](docs/brand/neuron-harness-film.mp4)** · [Static preview](docs/brand/memory-network.png) · [Promo poster](docs/brand/poster.zh.png)
+
+<details>
+<summary>Full architecture: record → archive and select → task pack → subagent → staging review</summary>
+
+[![neuron-harness architecture: model judgement, script-enforced invariants](docs/architecture.en.svg)](docs/architecture.en.png)
+
+Chinese edition: [architecture](docs/architecture.svg).
+
+</details>
 
 > Structurally neuron-inspired: T1 is the currently active core, T2–T4 spread outward toward the
 > edge, and entries decay downward when untouched for a long time. Mechanically it is a symbolic
@@ -107,6 +120,67 @@ this version and can be improved.
 | Three retrieval tiers | Tier 1 continuous work, no retrieval; Tier 2 neighborhood recall along the dependency graph; Tier 3 full re-evaluation |
 | staging | Subagent output lands in a buffer first and only enters the index after source validation |
 
+## Install and activate per-turn guidance
+
+Prerequisites: **Git and PowerShell 7**. The installer below belongs to v0.2.0; older release
+archives do not contain it. Use a revision containing `scripts/integrate.ps1`. Download the skill
+into a separate directory, outside the business project whose history it will record:
+
+```powershell
+git clone https://github.com/BlackCatt99/neuron-harness-skill.git neuron-harness
+Set-Location neuron-harness
+
+# Replace with the absolute path of an existing project
+$project = 'C:/work/my-project'
+pwsh -NoProfile -File ./scripts/assemble.ps1 -Mode Init -Project $project
+
+# Plan is read-only: inspect the project files before installing
+pwsh -NoProfile -File ./scripts/integrate.ps1 -Action Plan -Harness zcode -Project $project
+pwsh -NoProfile -File ./scripts/integrate.ps1 -Action Install -Harness zcode -Project $project
+pwsh -NoProfile -File ./scripts/integrate.ps1 -Action Status -Harness zcode -Project $project
+```
+
+The display name is `neuron-harness skill` and the public repository is `neuron-harness-skill`.
+The skill ID, installation-directory name and state namespace remain `neuron-harness` for
+compatibility. Select a harness explicitly: `zcode`, `codex`,
+`claude`, `cursor` or `generic`. The installer does not guess which project instructions to modify.
+
+| Harness | Project entry | Integration level |
+|---|---|---|
+| ZCode / Codex / generic | Managed block in `AGENTS.md` | Instruction-driven; depends on the host loading and following project rules |
+| Claude Code | Managed block in `CLAUDE.md` | Instruction-driven; optional native prompt-submission hook |
+| Cursor | `AGENTS.md` compatibility entry | Instruction-driven, not tested in a live Cursor session; no proprietary rules configuration installed |
+
+**Enable native prompt capture in Claude Code:**
+
+```powershell
+pwsh -NoProfile -File ./scripts/integrate.ps1 -Action Plan -Harness claude -EnablePromptHook -Project $project
+pwsh -NoProfile -File ./scripts/integrate.ps1 -Action Install -Harness claude -EnablePromptHook -Project $project
+```
+
+This merges a command hook under `UserPromptSubmit` in project `.claude/settings.json`. It records
+the submitted prompt and supplies a short protocol; it **does not automatically perform semantic
+archiving, evidence selection or subagent handoff**. The main agent still drives those steps.
+Events without a stable `prompt_id` do not have a retry-deduplication guarantee. Inputs containing
+reserved log delimiters are rejected rather than silently rewritten. Originals and receipts remain
+local and may contain sensitive data; do not commit `.neuron-harness/`.
+
+Start a new session after installation. Verify a synthetic message appears in `raw.log` and that
+the agent follows the protocol. `Status` verifies configuration integrity, **not live execution**.
+`clone + Init` alone neither registers the skill nor guarantees per-turn execution.
+
+The installer preserves existing instruction text and manages only its own marked block, with
+backups. Edited managed content, configuration conflicts and incomplete transactions stop changes.
+It never restores a whole backup over new user edits. Uninstall preserves memory history:
+
+```powershell
+pwsh -NoProfile -File ./scripts/integrate.ps1 -Action Uninstall -Harness zcode -Project $project
+# Only for an incomplete transaction reported by Status
+pwsh -NoProfile -File ./scripts/integrate.ps1 -Action Recover -Harness zcode -Project $project
+```
+
+See the [integration guide](integration/README.md) for safety boundaries, recovery and verification.
+
 ## Using it from any harness
 
 The script layer depends only on **PowerShell 7** and is not tied to any particular agent
@@ -120,6 +194,11 @@ into its model can integrate:
 - The state directory is fixed at `.neuron-harness/` under the project root, created by `Init`.
 
 ### Minimal integration
+
+[![Command walkthrough: Init, LogRaw, main-agent archive and selection, Assemble](docs/brand/quickstart.gif)](docs/brand/quickstart.png)
+
+Commands in the animation are abbreviated. It illustrates the integration sequence, not one-step
+automation or a speed benchmark. Full arguments follow. [Static version](docs/brand/quickstart.png).
 
 ```powershell
 # 1. Initialize the project state store
@@ -139,7 +218,7 @@ pwsh -NoProfile -File scripts/assemble.ps1 -Mode Assemble -TaskId <line> `
 
 ## Platform support
 
-- **Windows**: fully supported. All 27 integration tests pass on the development machine and on CI's
+- **Windows**: fully supported. All 28 integration tests pass on the development machine and on CI's
   `windows-latest`.
 - **Linux**: Windows-specific dependencies were removed (forward-slash paths, `GetTempPath`, no
   reliance on `-WindowStyle`, no assumption that `pwsh` is on PATH), and CI's `ubuntu-latest` runs
@@ -150,7 +229,9 @@ pwsh -NoProfile -File scripts/assemble.ps1 -Mode Assemble -TaskId <line> `
 ## Tests
 
 ```powershell
-pwsh -NoProfile -File tests/e2e.ps1          # 28 groups, exit code 0 means all green
+pwsh -NoProfile -File tests/e2e.ps1          # 28 tests (28 groups), exit code 0 means all green
+pwsh -NoProfile -File tests/integration.tests.ps1    # install, ownership, recovery
+pwsh -NoProfile -File tests/prompt-hook.tests.ps1    # verbatim capture and receipts
 pwsh -NoProfile -File tests/e2e.ps1 -KeepArtifacts   # keep the temp project for debugging
 pwsh -NoProfile -File tests/e2e.ps1 -ScriptPath <old-script>  # reverse-validate that new cases catch old defects
 ```
@@ -176,8 +257,11 @@ neuron-harness/
 ├── manifest.json         Version, license and template minimum-version mapping
 ├── templates/            4 short criteria injected at runtime (tier/archive/relevance/review)
 ├── scripts/assemble.ps1  Deterministic executor (17 modes, write lock, atomic writes, index rewrite)
+├── integration/          Short runtime protocol, installation and recovery guide
+├── scripts/integrate.ps1 Project installer (Plan/Install/Status/Uninstall/Recover)
+├── scripts/prompt-hook.ps1 Optional Claude native-prompt capture adapter
 ├── tests/e2e.ps1         28 integration test groups
-└── docs/                 Architecture diagram and promo video (regenerate via promo/render_promo.py)
+└── docs/                 Bilingual architecture and brand assets (regenerate via brand/render_visuals.py)
 ```
 
 ## Lineage

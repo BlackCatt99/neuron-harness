@@ -33,6 +33,14 @@ jobs:
         shell: pwsh
         run: ./tests/e2e.ps1
 
+      - name: Project integration regression
+        shell: pwsh
+        run: ./tests/integration.tests.ps1
+
+      - name: Prompt hook regression
+        shell: pwsh
+        run: ./tests/prompt-hook.tests.ps1
+
       - name: 失败时保留测试现场
         if: failure()
         uses: actions/upload-artifact@v4
