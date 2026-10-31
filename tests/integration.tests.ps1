@@ -400,3 +400,4 @@ Case 'Legacy journal explicitly refuses writes pending manual review' {
 }
 Write-Output "RESULT passed=$script:Passed skipped=$script:Skipped"
 Write-Output "Fixtures retained at: $script:TestRoot"
+exit 0
